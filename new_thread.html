@@ -30,8 +30,18 @@
 </head>
 
 <body id="body">
-  <input id="thread-title" autocomplete="off" placeholder="Title" type="text">
-  <textarea id="post-text" placeholder="Post text"></textarea>
+  <p>
+    Page(s) Involved?
+  </p>
+  <input id="page" autocomplete="off" placeholder="Eg: Bullet Bill" type="text">
+  <p>
+    Thread Title?
+  </p>
+  <input id="thread-title" autocomplete="off" placeholder="Eg: Any relevant patches?" type="text">
+  <p>
+    Post Text?
+  </p>
+  <textarea id="post-text" placeholder="Eg: Any of you know any patches that would be relevant?"></textarea>
   <script type="text/javascript">
     function init() {
       var query = window.location.search.substring(1);
@@ -43,7 +53,7 @@
         }
         return (false);
       }
-      document.getElementById("title").value = getQuery("origin");
+      document.getElementById("origin-page").value = getQuery("origin").replace("_", " ");
     }
     window.onload = init;
     // window.location.search
