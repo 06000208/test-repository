@@ -4,36 +4,104 @@
 <head id="head">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/@ungap/url-search-params"></script> <!-- https://github.com/ungap/url-search-params -->
   <title id="title">New Thread</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     html,
     body {
       margin: 0;
-    }
-
-    html {
-      background-color: #ddd;
       padding: 0;
     }
 
+    html {
+      height: 100%;
+      width: 100%;
+      background-color: #22242A;
+    }
+
     body {
-      color: #222;
+      min-height: 100%;
+      color: #ddd;
+      font-family: 'Roboto', sans-serif;
       font-size: 16px;
       line-height: 16px;
+      font-weight: 400;
       padding: 1em;
+    }
+
+    input,
+    textarea {
+      box-shadow: none;
+      border: 2px solid #4B4D52;
+      background-color: #22242A;
+      color: #eee;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      line-height: 16px;
+      font-weight: 400;
+      padding: 1em;
+      width: 500px;
     }
 
     input {
-      padding: 1em;
-      width: 400px;
+      height: 3em;
     }
 
     textarea {
-      padding: 1em;
-      height: 8em;
-      width: 400px;
-      max-width: 400px;
+      min-height: 6em;
+      height: 20em;
+      min-width: 500px;
+      max-width: 500px;
+      resize: vertical;
     }
+
+    a,
+    a:link {
+      color: #4183C4;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    a:visited {
+      color: #8f6ceb;
+    }
+
+    a:hover,
+    a:active,
+    a:focus {
+      text-decoration: underline;
+    }
+
+    a:not([href]) {
+      color: #A60000;
+      cursor: not-allowed;
+    }
+
+    a.page-title {
+      color: #E0A3D8;
+    }
+
+    /* .label 
+
+    .label.talk-thread
+    .label.bug
+    .label.enhancement
+    .label.proposal
+
+    .label.duplicate
+    .label.good-first-issue
+    .label.help-wanted
+    .label.invalid
+    .label.proposal
+    .label.question
+    .label.wont-change
+    .label.soon  */
   </style>
 </head>
 
@@ -49,24 +117,61 @@
   <p>
     Post text?
   </p>
-  <textarea id="post-text" placeholder="Example: Any of you know any patches that would be relevant to showcase?"></textarea>
+  <textarea id="post-text" placeholder="Example: Anyone know some good patches that would be relevant to showcase?"></textarea>
+  <p id="result">
+
+  </p>
   <script type="text/javascript">
-    function init() {
-      var query = window.location.search.substring(1);
-      var vars = query.split("&");
-      function getQuery(variable) {
-        for (var i = 0; i < vars.length; i++) {
-          var pair = vars[i].split("=");
-          if (pair[0] == variable) { return pair[1]; }
-        }
-        return (false);
-      }
-      let origin = getQuery("origin");
-      if (origin !== false) {
-        document.getElementById("page").value = origin.replace("_", " ");
+    var parameters = new URLSearchParams(window.location.search);
+    // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+    /* prototype new thread parameters spec
+    page= // title of the page they came from
+    origin= // url path of the page they came from
+    type= talk+thread, bug, enhancement, proposal, none
+    labels= // 
+    egg= true // value isn't checked, just that it's there, enables non-standard label selection, easter egg
+    */
+    var repository = "https://github.com/06000208/test-repository/issues/new?";
+    var query = new URLSearchParams();
+    var examples = {
+      talk_thread: {
+        page: "Bullet Bill",
+        post_text: "Any relevant patches?",
+        thread_title: "Anyone know some good patches that would be relevant to showcase?"
       }
     }
-    window.onload = init;
+    // correct
+    // template=talk_thread.md
+    // labels=talk+thread%2cwont+change
+    // title=Test+Example
+    // &body= encodeURIComponent()
+
+    function build() {
+      // + "/issues/new?"
+      query.set("template", "talk-thread.md");
+      query.set("labels", "talk+thread");
+      if (parameters.has("type") === true) {
+        if (["talk+thread", "bug", "enhancement", "proposal"].includes(parameters.get("type"))) {
+          query.set("labels", parameters.get("type"));
+        }
+      }
+      if ($("#thread-title").val().length > 1) {
+        query.set("title", $("#thread-title").val() + ($("#page").val().length > 1 ? " ("+$("#page").val()+")" : ""));
+      }
+      if ($("#post-text").val().length > 1) {
+        query.set("body", $("#post-text").val());
+      }
+      return repository + query.toString();
+    }
+    function oneSecondFunction() {
+      var link = build();
+      console.log("run:", link);
+      $("#result").html("<a href=\""+link+"\">"+link+"</a>");
+    }
+    $(function () {
+      console.log("initd")
+      setInterval(oneSecondFunction, 1000);
+    });
     // window.location.search
     // https://developer.mozilla.org/en-US/docs/Web/API/URL
   </script>
