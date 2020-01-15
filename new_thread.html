@@ -12,7 +12,7 @@
     }
 
     html {
-      background-color: #ccc;
+      background-color: #ddd;
       padding: 0;
     }
 
@@ -24,11 +24,12 @@
     }
 
     input {
-      height: 3em;
+      padding: 1em;
       width: 400px;
     }
 
     textarea {
+      padding: 1em;
       height: 8em;
       width: 400px;
       max-width: 400px;
@@ -38,17 +39,17 @@
 
 <body id="body">
   <p>
-    Page(s) Involved?
+    Page referenced?
   </p>
-  <input id="page" autocomplete="off" placeholder="Eg: Bullet Bill" type="text">
+  <input id="page" autocomplete="off" placeholder="Example: Bullet Bill" type="text">
   <p>
-    Thread Title?
+    Thread title?
   </p>
-  <input id="thread-title" autocomplete="off" placeholder="Eg: Any relevant patches?" type="text">
+  <input id="thread-title" autocomplete="off" placeholder="Example: Any relevant patches?" type="text">
   <p>
-    Post Text?
+    Post text?
   </p>
-  <textarea id="post-text" placeholder="Eg: Any of you know any patches that would be relevant?"></textarea>
+  <textarea id="post-text" placeholder="Example: Any of you know any patches that would be relevant to showcase?"></textarea>
   <script type="text/javascript">
     function init() {
       var query = window.location.search.substring(1);
@@ -60,7 +61,10 @@
         }
         return (false);
       }
-      document.getElementById("origin-page").value = getQuery("origin").replace("_", " ");
+      let origin = getQuery("origin");
+      if (origin !== false) {
+        document.getElementById("page").value = origin.replace("_", " ");
+      }
     }
     window.onload = init;
     // window.location.search
